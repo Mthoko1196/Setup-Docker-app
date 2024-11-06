@@ -11,9 +11,10 @@ jobs:
   # Job 1: Terraform Initialization and Planning
   terraform-plan:
     runs-on: ubuntu-latest
+
     steps:
     - name: Checkout code
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3  # Use the latest version
 
     - name: Set up Terraform
       uses: hashicorp/setup-terraform@v1
@@ -34,7 +35,7 @@ jobs:
       run: terraform plan -out=tfplan
 
     - name: Save Terraform Plan as an Artifact
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3  # Updated to the latest version
       with:
         name: tfplan
         path: tfplan
@@ -43,11 +44,11 @@ jobs:
   terraform-apply:
     needs: terraform-plan  # This job depends on the success of the previous job
     runs-on: ubuntu-latest
-    if: github.event_name == 'workflow_dispatch'  # Ensures this job runs only when triggered manually
+    if: github.event_name == 'workflow_dispatch'  # Ensure this job runs only when triggered manually
 
     steps:
     - name: Download Terraform Plan Artifact
-      uses: actions/download-artifact@v2
+      uses: actions/download-artifact@v3  # Updated to the latest version
       with:
         name: tfplan
 
