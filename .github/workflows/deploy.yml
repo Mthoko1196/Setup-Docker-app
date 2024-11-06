@@ -1,4 +1,4 @@
-name: Build and Deploy to EC2 with Manual Approval
+name: Build and Deploy to EC2
 
 on:
   push:
@@ -11,7 +11,7 @@ jobs:
 
     steps:
     - name: Checkout the code
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3  # Use the latest version
 
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v2
@@ -37,25 +37,8 @@ jobs:
     needs: build-and-push
     runs-on: ubuntu-latest
 
-#    steps:
-#    - name: Await Manual Approval
-#      if: github.event_name == 'workflow_dispatch'
-#      uses: actions/github-script@v4
-#      with:
-#        script: |
-#          const { context } = require("@actions/github");
-#          const { issue } = context;
-#          const message = "Manual approval required to proceed with deployment.";
-#          const comment = await github.issues.createComment({
-#            ...context.repo,
-#            issue_number: issue.number,
-#            body: message
-#          });
-      # Pause for manual approval
-#      timeout-minutes: 60  # Wait for up to 60 minutes for approval
-
+    steps:
     - name: Deploy to EC2 via SSH
-      if: github.event_name == 'workflow_dispatch'
       env:
         ECR_REPOSITORY: ${{ secrets.ECR_REPOSITORY }}
       uses: appleboy/ssh-action@v0.1.8
@@ -66,10 +49,10 @@ jobs:
         script: |
           # Pull the latest image from ECR
           sudo docker pull $ECR_REPOSITORY:latest
-          
+
           # Stop and remove any existing container named "my-nginx-app"
           sudo docker stop my-nginx-app || true
           sudo docker rm my-nginx-app || true
-          
+
           # Run the new container on port 80
           sudo docker run -d -p 80:80 --name my-nginx-app $ECR_REPOSITORY:latest
