@@ -1,3 +1,8 @@
-resource "aws_ecr_repository" "my_app" {
-  name = var.repository_name
+resource "aws_ecr_repository" "this" {
+  name                 = var.repo_name
+  image_tag_mutability = "MUTABLE"
+}
+
+output "repository_url" {
+  value = aws_ecr_repository.this.repository_url
 }
