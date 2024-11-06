@@ -73,4 +73,3 @@ jobs:
           
           # Run the new container on port 80
           sudo docker run -d -p 80:80 --name my-nginx-app $ECR_REPOSITORY:latest
-
