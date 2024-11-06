@@ -6,6 +6,14 @@ on:
       - main
 
 jobs:
+ name: Build and Push to ECR
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
   build-and-push:
     runs-on: ubuntu-latest
 
@@ -22,7 +30,16 @@ jobs:
         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         AWS_REGION: ${{ secrets.AWS_REGION }}
       run: |
-        aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin ${{ secrets.ECR_REPOSITORY }}
+        aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin ${{ secrets.ECR_REGISTRY }}
+
+    - name: Build, tag, and push Docker image to ECR
+      env:
+        ECR_REGISTRY: ${{ secrets.ECR_REGISTRY }}
+        ECR_REPOSITORY: ${{ secrets.ECR_REPOSITORY }}
+      run: |
+        IMAGE_TAG=latest
+        docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+        docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
 
     - name: Build and Tag Docker Image
       run: |
