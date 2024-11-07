@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - main
-  workflow_dispatch:  # Allows manual triggering for the deployment stage
+  workflow_dispatch:  # Allows manual trigger for approval and deployment
 
 jobs:
   build-and-push:
@@ -39,13 +39,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Wait for Manual Approval
-      run: |
-        echo "Review the build and approve before proceeding with deployment."
-        echo "Trigger the 'deploy' job manually using 'workflow_dispatch' when ready."
-    
+    - name: Manual Approval
+      run: echo "This job must be triggered manually through the GitHub Actions UI."
+
     - name: Deploy to EC2 via SSH
-      if: github.event_name == 'workflow_dispatch'  # Ensure this job only runs when triggered manually
       env:
         ECR_REPOSITORY: ${{ secrets.ECR_REPOSITORY }}
       uses: appleboy/ssh-action@v0.1.8
