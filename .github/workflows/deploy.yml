@@ -52,7 +52,7 @@ jobs:
             body: message
           });
       # Pause for manual approval
-      timeout-minutes: 60  # Wait for up to 60 minutes for approval
+      timeout-minutes: 1  # Wait for up to 60 minutes for approval
 
     - name: Deploy to EC2 via SSH
       if: github.event_name == 'workflow_dispatch'
