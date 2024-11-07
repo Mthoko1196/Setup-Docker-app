@@ -1,4 +1,4 @@
-name: Build and Deploy to EC2 with Manual Approval
+name: Build and Deploy to EC2
 
 on:
   push:
@@ -38,24 +38,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Await Manual Approval
-      if: github.event_name == 'workflow_dispatch'
-      uses: actions/github-script@v4
-      with:
-        script: |
-          const { context } = require("@actions/github");
-          const { issue } = context;
-          const message = "Manual approval required to proceed with deployment.";
-          const comment = await github.issues.createComment({
-            ...context.repo,
-            issue_number: issue.number,
-            body: message
-          });
-      # Pause for manual approval
-      timeout-minutes: 60  # Wait for up to 60 minutes for approval
-
     - name: Deploy to EC2 via SSH
-      if: github.event_name == 'workflow_dispatch'
       env:
         ECR_REPOSITORY: ${{ secrets.ECR_REPOSITORY }}
       uses: appleboy/ssh-action@v0.1.8
