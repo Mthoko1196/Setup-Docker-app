@@ -4,7 +4,7 @@ provider "aws" {
 
 # VPC Module
 module "vpc" {
-  source             = "./modules/vpc"
+  source             = "./Modules/vpc"
   cidr_block         = "172.0.0.0/16"
   public_subnet_cidr = "172.0.1.0/24"
   private_subnet_cidr = "172.0.2.0/24"
@@ -51,7 +51,7 @@ resource "aws_security_group" "rds_sg" {
 
 # EC2 Module
 module "ec2" {
-  source          = "./modules/ec2"
+  source          = "./Modules/ec2"
   ami_id          = "ami-06b21ccaeff8cd686"  # Update with a valid AMI ID for your region
   instance_type   = "t2.micro"
   subnet_id       = module.vpc.public_subnet_id
@@ -60,7 +60,7 @@ module "ec2" {
 
 # RDS Module
 module "rds" {
-  source           = "./modules/rds"
+  source           = "./Modules/rds"
   db_name          = "mydatabase"
   db_username      = "admin"
   db_password      = "password123"  # For security, store this in a secure secrets manager in real scenarios
@@ -72,7 +72,7 @@ module "rds" {
 
 # ECR Module
 module "ecr" {
-  source    = "./modules/ecr"
+  source    = "./Modules/ecr"
   repo_name = "my-nginx-app"
 }
 
