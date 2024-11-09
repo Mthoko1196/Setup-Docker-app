@@ -4,10 +4,14 @@ provider "aws" {
 
 # VPC Module
 module "vpc" {
-  source             = "./Modules/vpc"
-  cidr_block         = "172.0.0.0/16"
-  public_subnet_cidr = "172.0.1.0/24"
-  private_subnet_cidr = "172.0.2.0/24"
+  source                  = "./Modules/vpc"
+  cidr_block              = "172.0.0.0/16"
+  public_subnet_cidr_1    = "172.0.1.0/24"
+  public_subnet_cidr_2    = "172.0.3.0/24"
+  private_subnet_cidr_1   = "172.0.2.0/24"
+  private_subnet_cidr_2   = "172.0.4.0/24"
+  az_1                    = "us-east-1a"
+  az_2                    = "us-east-1b"
 }
 
 # Security Group for EC2 and RDS
