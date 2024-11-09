@@ -33,7 +33,7 @@ jobs:
       run: |
         docker push ${{ secrets.ECR_REPOSITORY }}:latest
 
-    # Add Terraform steps to provision infrastructure
+    # Add Terraform steps to provision Infrastructure
     - name: Set up Terraform
       uses: hashicorp/setup-terraform@v1
       with:
