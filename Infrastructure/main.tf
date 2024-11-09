@@ -15,7 +15,7 @@ module "vpc" {
 
 module "ec2" {
   source                  = "./Modules/ec2"
-  ami_id                  = "ami-0c55b159cbfafe1f0"  # Replace with a valid AMI ID
+  ami_id                  = "ami-063d43db0594b521b"  # Replace with a valid AMI ID
   instance_type           = "t2.micro"
   subnet_id               = module.vpc.public_subnet_ids[0]  # Use the first public subnet ID
   security_group_id       = module.vpc.public_security_group_id
