@@ -48,8 +48,8 @@ jobs:
 
     # Navigate to the Terraform configuration directory
     - name: Change to Terraform directory
-      run: cd path/to/terraform/config
-      
+      run: cd infrastructure
+
     - name: Terraform Init
       run: terraform init
 
