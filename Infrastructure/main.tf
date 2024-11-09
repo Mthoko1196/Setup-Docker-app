@@ -66,7 +66,7 @@ module "rds" {
   db_password      = "password123"  # For security, store this in a secure secrets manager in real scenarios
   instance_class   = "db.t3.micro"
   allocated_storage = 20
-  private_subnet_ids = [module.vpc.private_subnet_id1, module.vpc.private_subnet_id2]  # Ensure these subnets are from different AZs
+  private_subnet_ids =  module.vpc.private_subnet_ids  # Reference the output as a list  # Ensure these subnets are from different AZs
   security_group_id = aws_security_group.rds_sg.id
 }
 
