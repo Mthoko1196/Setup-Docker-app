@@ -1,5 +1,10 @@
 resource "aws_vpc" "main" {
   cidr_block = var.cidr_block
+  tags = {
+    Name        = "MyVPC"
+    Environment = "Development"
+    Project     = "Medici"
+  }
 }
 
 resource "aws_subnet" "public_1" {
@@ -7,6 +12,11 @@ resource "aws_subnet" "public_1" {
   cidr_block              = var.public_subnet_cidr_1
   availability_zone       = var.az_1
   map_public_ip_on_launch = true
+  tags = {
+    Name        = "Public_Subnet1A"
+    Environment = "Development"
+    Project     = "Medici"
+  }
 }
 
 resource "aws_subnet" "public_2" {
@@ -14,26 +24,51 @@ resource "aws_subnet" "public_2" {
   cidr_block              = var.public_subnet_cidr_2
   availability_zone       = var.az_2
   map_public_ip_on_launch = true
+  tags = {
+    Name        = "Public_Subnet2B"
+    Environment = "Development"
+    Project     = "Medici"
+  }
 }
 
 resource "aws_subnet" "private_1" {
   vpc_id            = aws_vpc.main.id
   cidr_block        = var.private_subnet_cidr_1
   availability_zone = var.az_1
+  tags = {
+    Name        = "Private_Subnet1A"
+    Environment = "Development"
+    Project     = "Medici"
+  }
 }
 
 resource "aws_subnet" "private_2" {
   vpc_id            = aws_vpc.main.id
   cidr_block        = var.private_subnet_cidr_2
   availability_zone = var.az_2
+  tags = {
+    Name        = "Private_Subnet2B"
+    Environment = "Development"
+    Project     = "Medici"
+  }
 }
 
 resource "aws_internet_gateway" "igw" {
   vpc_id = aws_vpc.main.id
+  tags = {
+    Name        = "IGW"
+    Environment = "Development"
+    Project     = "Medici"
+  }
 }
 
 resource "aws_route_table" "public" {
   vpc_id = aws_vpc.main.id
+    tags = {
+    Name        = "Public_Route_table"
+    Environment = "Development"
+    Project     = "Medici"
+  }
 }
 
 resource "aws_route_table_association" "public_1" {
