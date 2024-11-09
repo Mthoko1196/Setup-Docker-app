@@ -1,16 +1,16 @@
 variable "ami_id" {
-  description = "Amazon Machine Image ID"
+  type = string
 }
 
 variable "instance_type" {
-  description = "Instance type for the EC2 instance"
-  default     = "t2.micro"
+  type    = string
+  default = "t2.micro"
 }
 
 variable "subnet_id" {
-  description = "Subnet ID for the instance"
+  type = string
 }
 
-variable "security_group" {
-  description = "Security group for the instance"
+variable "security_group_id" {
+  type = string
 }
