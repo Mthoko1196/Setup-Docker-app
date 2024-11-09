@@ -1,10 +1,9 @@
-name: CI/CD Pipeline for Nginx Deployment
+name: Build and Deploy to EC2 with Manual Approval
 
 on:
   push:
     branches:
       - main
-  workflow_dispatch:  # Allows manual trigger for approval and deployment
 
 jobs:
   build-and-push:
@@ -34,20 +33,64 @@ jobs:
       run: |
         docker push ${{ secrets.ECR_REPOSITORY }}:latest
 
+    # Add Terraform steps to provision infrastructure
+    - name: Set up Terraform
+      uses: hashicorp/setup-terraform@v1
+      with:
+        terraform_version: 1.4.5  # Specify the Terraform version you need
+
+    - name: Configure AWS Credentials for Terraform
+      uses: aws-actions/configure-aws-credentials@v2
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ${{ secrets.AWS_REGION }}
+
+    - name: Terraform Init
+      run: terraform init
+
+    - name: Terraform Plan
+      run: terraform plan -out=tfplan
+
+    - name: Terraform Apply
+      run: terraform apply -auto-approve tfplan
+
+    - name: Get Terraform Outputs
+      id: tf-output
+      run: |
+        terraform output -json > tf-output.json
+
+    - name: Set EC2 Host as Environment Variable
+      run: echo "EC2_HOST=$(jq -r '.ec2_public_ip.value' tf-output.json)" >> $GITHUB_ENV
+
   deploy:
     needs: build-and-push
     runs-on: ubuntu-latest
 
     steps:
-    - name: Manual Approval
-      run: echo "This job must be triggered manually through the GitHub Actions UI."
+    - name: Await Manual Approval
+      if: github.event_name == 'workflow_dispatch'
+      uses: actions/github-script@v4
+      with:
+        script: |
+          const { context } = require("@actions/github");
+          const { issue } = context;
+          const message = "Manual approval required to proceed with deployment.";
+          const comment = await github.issues.createComment({
+            ...context.repo,
+            issue_number: issue.number,
+            body: message
+          });
+      # Pause for manual approval
+      timeout-minutes: 60  # Wait for up to 60 minutes for approval
 
     - name: Deploy to EC2 via SSH
+      if: github.event_name == 'workflow_dispatch'
       env:
         ECR_REPOSITORY: ${{ secrets.ECR_REPOSITORY }}
       uses: appleboy/ssh-action@v0.1.8
       with:
-        host: ${{ secrets.EC2_HOST }}
+        host: ${{ env.EC2_HOST }}  # Dynamically set from Terraform output
         username: ${{ secrets.EC2_USER }}
         key: ${{ secrets.EC2_SSH_KEY }}
         script: |
