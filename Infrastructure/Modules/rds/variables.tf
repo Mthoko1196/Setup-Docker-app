@@ -45,7 +45,7 @@ variable "engine_version" {
 }
 
 variable "private_subnet_ids" {
-  description = "List of private subnet IDs for the RDS subnet group"
+  description = "List of private subnet IDs in at least 2 different Availability Zones"
   type        = list(string)
 }
 
