@@ -24,8 +24,8 @@ module "ec2" {
 module "rds" {
   source                  = "./Modules/rds"
   db_name                 = "mydatabase"
-  db_username             = "admin"
-  db_password             = "password123"  # Replace with a secure method for handling sensitive data
+  db_username             = "add username"
+  db_password             = "add password"  # Replace with a secure method for handling sensitive data
   instance_class          = "db.t3.micro"
   allocated_storage       = 20             # Specify the allocated storage in gigabytes
   engine                  = "mysql"        # Specify the database engine (e.g., mysql, postgres)
